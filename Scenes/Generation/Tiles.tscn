@@ -1,0 +1,68 @@
+[gd_scene load_steps=7 format=3 uid="uid://dr8mx4k4hb2"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_ubnhm"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_ceek5"]
+albedo_color = Color(1, 1, 0, 1)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_uvyqo"]
+size = Vector3(10, 1, 10)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_r4jmv"]
+albedo_color = Color(0, 1, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_inslj"]
+albedo_color = Color(1, 0, 1, 1)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_dbf6x"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="Chunk2" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -21.9, 0, 0)
+mesh = SubResource("BoxMesh_ubnhm")
+surface_material_override/0 = SubResource("StandardMaterial3D_ceek5")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Chunk2"]
+collision_layer = 128
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chunk2/StaticBody3D"]
+shape = SubResource("BoxShape3D_uvyqo")
+
+[node name="Chunk3" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0.686996, 0, 0)
+mesh = SubResource("BoxMesh_ubnhm")
+surface_material_override/0 = SubResource("StandardMaterial3D_r4jmv")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Chunk3"]
+collision_layer = 128
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chunk3/StaticBody3D"]
+shape = SubResource("BoxShape3D_uvyqo")
+
+[node name="Chunk4" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 26.7688, 0, 0)
+mesh = SubResource("BoxMesh_ubnhm")
+surface_material_override/0 = SubResource("StandardMaterial3D_inslj")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Chunk4"]
+collision_layer = 128
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chunk4/StaticBody3D"]
+shape = SubResource("BoxShape3D_uvyqo")
+
+[node name="Chunk" type="MeshInstance3D" parent="."]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -44.996, 0, 0)
+mesh = SubResource("BoxMesh_ubnhm")
+surface_material_override/0 = SubResource("StandardMaterial3D_dbf6x")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="Chunk"]
+collision_layer = 128
+collision_mask = 3
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Chunk/StaticBody3D"]
+shape = SubResource("BoxShape3D_uvyqo")

@@ -1,0 +1,54 @@
+[gd_scene load_steps=9 format=3 uid="uid://rwy7qse53uoj"]
+
+[ext_resource type="Script" path="res://Scripts/world.gd" id="1_wqau4"]
+[ext_resource type="PackedScene" uid="uid://dp3lou8p461ki" path="res://Scenes/Generation/map_gen.tscn" id="2_77wxc"]
+[ext_resource type="Script" path="res://Scripts/player.gd" id="3_g8fmn"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_i8t5b"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_dc556"]
+sky_material = SubResource("ProceduralSkyMaterial_i8t5b")
+
+[sub_resource type="Environment" id="Environment_ayfsh"]
+background_mode = 2
+sky = SubResource("Sky_dc556")
+tonemap_mode = 2
+glow_enabled = true
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_b1gj7"]
+
+[sub_resource type="QuadMesh" id="QuadMesh_2chmq"]
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_wqau4")
+
+[node name="Env" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Env"]
+environment = SubResource("Environment_ayfsh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env"]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 16.4857, 0)
+shadow_enabled = true
+
+[node name="MapGen" parent="." instance=ExtResource("2_77wxc")]
+
+[node name="Player" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.999161, -0.0409514, 0, 0.0409514, 0.999161, 5, 10, -0.1)
+script = ExtResource("3_g8fmn")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+mesh = SubResource("CapsuleMesh_b1gj7")
+
+[node name="Camera3D" type="Camera3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.57019, -0.448372)
+fov = 90.0
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(92.3399, 0, 0, 0, -4.0363e-06, 92.3399, 0, -92.3399, -4.0363e-06, 5, 10, 5)
+mesh = SubResource("QuadMesh_2chmq")
+
+[connection signal="gridPositionChanged" from="Player" to="MapGen" method="_on_player_grid_position_changed"]

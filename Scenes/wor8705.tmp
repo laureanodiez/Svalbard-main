@@ -1,0 +1,108 @@
+[gd_scene load_steps=13 format=3 uid="uid://rwy7qse53uoj"]
+
+[ext_resource type="Script" path="res://Scripts/world.gd" id="1_wqau4"]
+[ext_resource type="PackedScene" uid="uid://dp3lou8p461ki" path="res://Scenes/Generation/map_gen.tscn" id="2_77wxc"]
+[ext_resource type="PackedScene" uid="uid://b4dwosxeldv0a" path="res://Scenes/player.tscn" id="3_6wqjl"]
+[ext_resource type="PackedScene" uid="uid://dsp86se5oye80" path="res://Scenes/bear.tscn" id="4_urjgq"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_i8t5b"]
+sky_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+ground_horizon_color = Color(0.64625, 0.65575, 0.67075, 1)
+
+[sub_resource type="Sky" id="Sky_dc556"]
+sky_material = SubResource("ProceduralSkyMaterial_i8t5b")
+
+[sub_resource type="Environment" id="Environment_ayfsh"]
+background_mode = 2
+sky = SubResource("Sky_dc556")
+ambient_light_color = Color(0.858824, 0.858824, 0.858824, 1)
+ambient_light_energy = 1.5
+tonemap_mode = 2
+glow_enabled = true
+fog_density = 0.0626
+volumetric_fog_enabled = true
+volumetric_fog_density = 0.2343
+volumetric_fog_emission = Color(1, 1, 1, 1)
+volumetric_fog_emission_energy = 0.1
+volumetric_fog_length = 15.0
+volumetric_fog_ambient_inject = 1.19
+
+[sub_resource type="Curve" id="Curve_0v1sd"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1e-05, 1), 0.0, 0.0, 0, 0, Vector2(0.785714, 0.178947), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_jlfuv"]
+curve = SubResource("Curve_0v1sd")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4oxqv"]
+emission_shape = 3
+emission_box_extents = Vector3(5, 0, 5)
+direction = Vector3(0, -2, 0)
+spread = 50.0
+gravity = Vector3(0, -0.2, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 2.0
+scale_min = 0.1
+scale_max = 0.1
+scale_curve = SubResource("CurveTexture_jlfuv")
+turbulence_noise_strength = 0.1
+turbulence_noise_scale = 3.8
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_2u5yo"]
+metallic_specular = 0.16
+roughness = 0.05
+disable_receive_shadows = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_0lj5j"]
+material = SubResource("StandardMaterial3D_2u5yo")
+
+[node name="World" type="Node3D"]
+script = ExtResource("1_wqau4")
+
+[node name="Env" type="Node3D" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="Env"]
+environment = SubResource("Environment_ayfsh")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="Env"]
+transform = Transform3D(-0.866024, -0.433016, 0.250001, 0, 0.499998, 0.866026, -0.500003, 0.749999, -0.43301, 0, 16.4857, 0)
+light_color = Color(0.14902, 0.14902, 0.14902, 1)
+light_energy = 0.005
+shadow_enabled = true
+
+[node name="MapGen" parent="." instance=ExtResource("2_77wxc")]
+process_mode = 4
+
+[node name="Player" parent="." instance=ExtResource("3_6wqjl")]
+transform = Transform3D(0.3, 0, 0, 0, 0.3, 0, 0, 0, 0.3, 5, 0, 5)
+
+[node name="GPUParticles3D" type="GPUParticles3D" parent="Player"]
+transform = Transform3D(4.51267, 0, 0, 0, 3.9135, 0, 0, 0, 6.01403, 0, 17.8462, 0)
+cast_shadow = 0
+amount = 1000
+lifetime = 10.0
+preprocess = 5.0
+speed_scale = 3.0
+randomness = 0.5
+visibility_aabb = AABB(-4, -6.58299, -4, 8, 13.166, 8)
+process_material = SubResource("ParticleProcessMaterial_4oxqv")
+draw_pass_1 = SubResource("SphereMesh_0lj5j")
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(3.58397, 0, 0, 0, 1, 0, 0, 0, 15.8705, 0, -0.5, 0)
+use_collision = true
+collision_layer = 128
+collision_mask = 3
+size = Vector3(27.6616, 1, 10)
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="CSGBox3D"]
+transform = Transform3D(13.9783, 0, 0, 0, 1, 0, 0, 0, 4.99375, 0, -0.386486, 0)
+
+[node name="Bear" parent="." instance=ExtResource("4_urjgq")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.26116, 0.763582, 13.7566)
+
+[connection signal="globalPositionChanged" from="Player" to="Bear" method="_on_player_global_position_changed"]
+[connection signal="gridPositionChanged" from="Player" to="MapGen" method="_on_player_grid_position_changed"]

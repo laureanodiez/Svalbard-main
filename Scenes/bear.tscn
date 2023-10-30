@@ -1,0 +1,68 @@
+[gd_scene load_steps=10 format=3 uid="uid://dsp86se5oye80"]
+
+[ext_resource type="Script" path="res://Scripts/bear.gd" id="1_2c5uj"]
+[ext_resource type="PackedScene" uid="uid://dqhamaw7fueeq" path="res://Scenes/Components/health.tscn" id="1_2exgg"]
+[ext_resource type="PackedScene" uid="uid://cjp3xovskjfxy" path="res://Scenes/Components/hitbox.tscn" id="2_5jau0"]
+[ext_resource type="Script" path="res://Scripts/hitbox.gd" id="4_dn7w0"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_sp2d2"]
+size = Vector3(2.4, 1.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_xlr3g"]
+size = Vector3(2.4, 1.5, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_isxf3"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_1fjrk"]
+size = Vector3(0.5, 0.5, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_tcsyy"]
+size = Vector3(2.33, 1.465, 0.89)
+
+[node name="Bear" type="CharacterBody3D"]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+script = ExtResource("1_2c5uj")
+
+[node name="Health" parent="." instance=ExtResource("1_2exgg")]
+MAX_HEALTH = 1000.0
+
+[node name="Body" type="Node3D" parent="."]
+
+[node name="Hitbox" parent="Body" node_paths=PackedStringArray("health") groups=["Enemy"] instance=ExtResource("2_5jau0")]
+collision_layer = 2
+collision_mask = 129
+health = NodePath("../../Health")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Body/Hitbox"]
+shape = SubResource("BoxShape3D_sp2d2")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Body"]
+mesh = SubResource("BoxMesh_xlr3g")
+skeleton = NodePath("../..")
+
+[node name="Head" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Head"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.41553, 0.684047, 0)
+mesh = SubResource("BoxMesh_isxf3")
+
+[node name="HeadBox" type="Area3D" parent="Head" node_paths=PackedStringArray("health") groups=["Enemy"]]
+collision_layer = 2
+script = ExtResource("4_dn7w0")
+health = NodePath("../../Health")
+damageMultiplier = 2.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Head/HeadBox"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.41553, 0.684047, 0)
+shape = SubResource("BoxShape3D_1fjrk")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("BoxShape3D_tcsyy")
+
+[node name="stunTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="health_depleted" from="Health" to="." method="_on_health_health_depleted"]
+[connection signal="is_stunned" from="Health" to="." method="_on_health_is_stunned"]
+[connection signal="timeout" from="stunTimer" to="." method="_on_stun_timer_timeout"]

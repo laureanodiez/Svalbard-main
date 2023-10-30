@@ -1,0 +1,32 @@
+[gd_scene load_steps=4 format=3 uid="uid://cbc2dnlicny3y"]
+
+[ext_resource type="Script" path="res://Scripts/weapon.gd" id="1_w6617"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_rllta"]
+albedo_color = Color(0.192157, 0.192157, 0.192157, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_r6aae"]
+material = SubResource("StandardMaterial3D_rllta")
+size = Vector3(0.2, 0.2, 0.4)
+
+[node name="Pistol" type="Node3D"]
+script = ExtResource("1_w6617")
+MAX_AMMO = 30
+MAX_MAG = 10
+weapon_seleceted = true
+weapon_damage = 100.0
+
+[node name="AimCast" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, 50)
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="reloadTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.619901, 0, 0.0542343, 0, 0.622269, 0, -0.0542343, 0, 0.619901, -0.227936, -0.185873, 0.346322)
+mesh = SubResource("BoxMesh_r6aae")
+
+[connection signal="timeout" from="reloadTimer" to="." method="_on_reload_timer_timeout"]

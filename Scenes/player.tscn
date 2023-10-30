@@ -1,0 +1,52 @@
+[gd_scene load_steps=7 format=3 uid="uid://b4dwosxeldv0a"]
+
+[ext_resource type="Script" path="res://Scripts/player.gd" id="1_so0j8"]
+[ext_resource type="PackedScene" uid="uid://dqhamaw7fueeq" path="res://Scenes/Components/health.tscn" id="2_8s8be"]
+[ext_resource type="PackedScene" uid="uid://cbc2dnlicny3y" path="res://Scenes/pistol.tscn" id="2_m8ohd"]
+[ext_resource type="PackedScene" uid="uid://bohekptop8qoe" path="res://Scenes/shotgun.tscn" id="3_xw1ht"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_b1gj7"]
+height = 1.8
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_g17fo"]
+height = 1.80425
+
+[node name="Player" type="CharacterBody3D" groups=["Player"]]
+transform = Transform3D(0.5, 0, 0, 0, 0.5, 0, 0, 0, 0.5, 0, 0, 0)
+collision_mask = 130
+script = ExtResource("1_so0j8")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.925827, 0)
+mesh = SubResource("CapsuleMesh_b1gj7")
+skeleton = NodePath("")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.33345, 0.4)
+
+[node name="Pistol" parent="Head" instance=ExtResource("2_m8ohd")]
+reload_time = 2.0
+
+[node name="Camera3D" type="Camera3D" parent="Head"]
+transform = Transform3D(-2, 0, -1.74846e-07, 0, 2, 0, 1.74846e-07, 0, -2, 0, 0, 0)
+fov = 80.0
+far = 20.0
+
+[node name="Shotgun" parent="Head" instance=ExtResource("3_xw1ht")]
+process_mode = 0
+visible = false
+reload_time = 3.0
+
+[node name="Health" parent="." instance=ExtResource("2_8s8be")]
+MAX_HEALTH = 100.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.930949, 0)
+shape = SubResource("CapsuleShape3D_g17fo")
+
+[node name="stunTimer" type="Timer" parent="."]
+one_shot = true
+
+[connection signal="health_depleted" from="Health" to="." method="_on_health_health_depleted"]
+[connection signal="is_stunned" from="Health" to="." method="_on_health_is_stunned"]
+[connection signal="timeout" from="stunTimer" to="." method="_on_stun_timer_timeout"]

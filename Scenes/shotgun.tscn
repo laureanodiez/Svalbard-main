@@ -1,0 +1,29 @@
+[gd_scene load_steps=3 format=3 uid="uid://bohekptop8qoe"]
+
+[ext_resource type="Script" path="res://Scripts/weapon.gd" id="1_tehyo"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dmtnr"]
+
+[node name="Shotgun" type="Node3D"]
+process_mode = 4
+script = ExtResource("1_tehyo")
+MAX_AMMO = 6
+MAX_MAG = 2
+reload_time = 5.0
+weapon_damage = 500.0
+stun_time = 1.0
+
+[node name="AimCast" type="RayCast3D" parent="."]
+target_position = Vector3(0, 0, 20)
+collision_mask = 2
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="reloadTimer" type="Timer" parent="."]
+one_shot = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(0.299101, 0, 0.129263, 0, 0.261686, 0, -0.0389898, 0, 0.99161, -0.430154, -0.15289, 0.67768)
+mesh = SubResource("BoxMesh_dmtnr")
+
+[connection signal="timeout" from="reloadTimer" to="." method="_on_reload_timer_timeout"]
